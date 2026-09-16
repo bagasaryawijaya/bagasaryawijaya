@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
-import { ArrowDownRight, Github, Linkedin, Mail, MoveRight } from 'lucide-react';
+import { ArrowDownRight, Instagram, Github, Linkedin, Mail, MoveRight } from 'lucide-react';
 import RunnerAvatar from './RunnerAvatar';
 
 const tech = ['React JS', 'Tailwind CSS', 'JavaScript', 'HTML', 'Firebase', 'Supabase', 'Git', 'GitHub', 'Node.js', 'Vercel'];
@@ -64,26 +64,28 @@ export default function Hero() {
             I am a Full Stack Developer who enjoys turning ideas into fast, responsive, and enjoyable websites. Just like running: consistent, always moving forward, and constantly seeking a better pace.
           </p>
 
-          <div className="mt-8 flex flex-wrap items-center gap-3">
-            <a href="#portfolio" className="group inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3.5 font-bold text-white shadow-xl shadow-slate-300/40 transition hover:-translate-y-1 hover:bg-sky-600">
-              Lihat Projects <MoveRight size={18} className="transition-transform group-hover:translate-x-1" />
-            </a>
-            <a href="#about" className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/70 px-6 py-3.5 font-bold text-slate-800 transition hover:-translate-y-1 hover:border-sky-300 hover:text-sky-600">
-              Tentang Saya <ArrowDownRight size={18} />
-            </a>
-          </div>
-
           <div className="mt-8 flex gap-3">
             {[
+              { icon: Instagram, href: 'https://www.instagram.com/bagasarya_23/', label: 'Instagram' },
               { icon: Github, href: 'https://github.com/bagasaryawijaya', label: 'GitHub' },
               { icon: Linkedin, href: 'https://www.linkedin.com/in/bagas-arya-wijaya-0b6414261/', label: 'LinkedIn' },
               { icon: Mail, href: 'mailto:bagasaryawijaya27@gmail.com', label: 'Email' },
             ].map(({ icon: Icon, href, label }) => (
               <a key={label} href={href} target="_blank" rel="noreferrer" aria-label={label} className="grid h-11 w-11 place-items-center rounded-full border border-slate-200 bg-white/80 text-slate-700 shadow-sm transition hover:-translate-y-1 hover:border-sky-300 hover:bg-sky-50 hover:text-sky-600">
-                <Icon size={19} />
+                <Icon size={32} />
               </a>
             ))}
           </div>
+
+          <div className="mt-8 flex flex-wrap items-center gap-3">
+            <a href="#portfolio" className="group inline-flex items-center gap-2 rounded-full bg-slate-950 px-6 py-3.5 font-bold text-white shadow-xl shadow-slate-300/40 transition hover:-translate-y-1 hover:bg-sky-600">
+              See My Projects <MoveRight size={18} className="transition-transform group-hover:translate-x-1" />
+            </a>
+            <a href="#about" className="inline-flex items-center gap-2 rounded-full border border-slate-300 bg-white/70 px-6 py-3.5 font-bold text-slate-800 transition hover:-translate-y-1 hover:border-sky-300 hover:text-sky-600">
+              About Me <ArrowDownRight size={18} />
+            </a>
+          </div>
+
         </motion.div>
 
         <motion.div initial={{ opacity: 0, scale: .86 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: .9, delay: .15 }} className="flex justify-center lg:justify-end">
