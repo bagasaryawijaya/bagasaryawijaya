@@ -2,28 +2,53 @@ import { useState, useEffect } from 'react';
 import { Bot, X, Activity } from 'lucide-react';
 import axios from 'axios';
 
+const API_BASE_URL = (import.meta.env.VITE_API_BASE_URL || '').replace(/\/$/, '');
+const api = axios.create({ baseURL: API_BASE_URL });
+
 export default function AIAssistant() {
   const [open, setOpen] = useState(false);
   const [metrics, setMetrics] = useState(null);
   const [tips, setTips] = useState('Halo! Saya asisten AI yang memantau website ini secara real-time.');
 
   useEffect(() => {
+    const controller = new AbortController();
+    const { signal } = controller;
+
     // Heartbeat: kirim aktivitas visitor ke backend
-    axios.post('/api/ai/track', {
+    api.post('/api/ai/track', {
       page: window.location.pathname,
       ua: navigator.userAgent,
       ts: Date.now(),
-    }).catch(() => {});
+    }, { signal }).catch((err) => {
+      if (axios.isCancel(err) || err.code === 'ERR_CANCELED') return;
+      console.warn('[AIAssistant] Gagal mengirim heartbeat:', err?.message ?? err);
+    });
 
     const interval = setInterval(async () => {
       try {
-        const { data } = await axios.get('/api/ai/metrics');
-        setMetrics(data);
+        const { data } = await api.get('/api/ai/metrics', { signal });
+        if (signal.aborted) return;
+        if (!data || typeof data !== 'object') {
+          console.warn('[AIAssistant] Format metrik tidak valid:', data);
+          return;
+        }
+        setMetrics({
+          visitors: data.visitors ?? 0,
+          uptime: data.uptime ?? 0,
+          responseTime: data.responseTime ?? 0,
+          health: data.health ?? 'n/a',
+        });
         if (data.tip) setTips(data.tip);
-      } catch {}
+      } catch (err) {
+        if (axios.isCancel(err) || err.code === 'ERR_CANCELED') return;
+        console.warn('[AIAssistant] Gagal memuat metrik:', err?.message ?? err);
+      }
     }, 8000);
 
-    return () => clearInterval(interval);
+    return () => {
+      controller.abort();
+      clearInterval(interval);
+    };
   }, []);
 
   return (
@@ -48,19 +73,19 @@ export default function AIAssistant() {
             <div className="grid grid-cols-2 gap-2 text-xs">
               <div className="bg-sky-50 rounded-lg p-2">
                 <p className="text-sky-600">Visitors</p>
-                <p className="font-bold text-sky-900">{metrics.visitors}</p>
+                <p className="font-bold text-sky-900">{metrics.visitors ?? 0}</p>
               </div>
               <div className="bg-sky-50 rounded-lg p-2">
                 <p className="text-sky-600">Uptime</p>
-                <p className="font-bold text-sky-900">{metrics.uptime}%</p>
+                <p className="font-bold text-sky-900">{metrics.uptime ?? 0}%</p>
               </div>
               <div className="bg-sky-50 rounded-lg p-2">
                 <p className="text-sky-600">Response</p>
-                <p className="font-bold text-sky-900">{metrics.responseTime}ms</p>
+                <p className="font-bold text-sky-900">{metrics.responseTime ?? 0}ms</p>
               </div>
               <div className="bg-sky-50 rounded-lg p-2">
                 <p className="text-sky-600">Health</p>
-                <p className="font-bold text-green-600">{metrics.health}</p>
+                <p className="font-bold text-green-600">{metrics.health ?? 'n/a'}</p>
               </div>
             </div>
           )}
