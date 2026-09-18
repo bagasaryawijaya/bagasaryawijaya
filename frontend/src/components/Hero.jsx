@@ -56,11 +56,11 @@ export default function Hero() {
         <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .8 }}>
           <TypewriterGreeting />
 
-        <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[.98] tracking-[-.04em] text-sky-500 sm:text-6xl lg:text-7xl">
+        <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[.98] tracking-[-.04em] text-sky-500 sm:text-6xl lg:text-7xl">
           Bagas Arya Wijaya
         </h1>
 
-        <h5 className="mt-3 max-w-2xl text-xl font-bold leading-[.98] tracking-[-.02em] text-sky-500 sm:text-2xl lg:text-5xl">
+        <h5 className="mt-7 max-w-2xl text-xl font-bold leading-[.98] tracking-[-.02em] text-sky-500 sm:text-2xl lg:text-5xl">
           Full Stack Web Developer
         </h5>
 
