@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Award, Download, ExternalLink, Layers3, Rocket, Sparkles } from 'lucide-react';
-import { SiReact, SiTailwindcss, SiJavascript, SiHtml5, SiFirebase, SiSupabase, SiGit, SiGithub, SiNodedotjs, SiVercel } from 'react-icons/si';
+import { SiFigma, SiReact, SiTailwindcss, SiJavascript, SiHtml5, SiFirebase, SiSupabase, SiGit, SiGithub, SiNodedotjs, SiVercel } from 'react-icons/si';
 
 import projectVideo from '../assets/website-video-belajar.png';
 
@@ -12,7 +12,7 @@ import certWordpress from '../assets/SertifikatMyskill.jpg';
 const projects = [{
   title: 'Video Belajar Platform',
   desc: 'A digital learning platform featuring courses, authentication, payments, quizzes, an admin dashboard, and a blog.',
-  tags: ['React JS', 'Tailwind CSS', 'Node.js', 'Firebase'],
+  tags: ['Figma', 'React JS', 'Tailwind CSS', 'Node.js', 'Firebase'],
   link: 'https://video-belajar-three.vercel.app/',
   image: projectVideo,
 }];
@@ -23,6 +23,7 @@ const certificates = [
 ];
 
 const stack = [
+  { name: 'Figma', icon: SiFigma, color: '#F24E1E' },
   { name: 'React JS', icon: SiReact, color: '#61DAFB' },
   { name: 'Tailwind CSS', icon: SiTailwindcss, color: '#06B6D4' },
   { name: 'JavaScript', icon: SiJavascript, color: '#F7DF1E' },

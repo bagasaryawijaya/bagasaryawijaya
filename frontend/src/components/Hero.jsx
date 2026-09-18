@@ -3,7 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowDownRight, Instagram, Github, Linkedin, Mail, MoveRight } from 'lucide-react';
 import RunnerAvatar from './RunnerAvatar';
 
-const tech = ['React JS', 'Tailwind CSS', 'JavaScript', 'HTML', 'Firebase', 'Supabase', 'Git', 'GitHub', 'Node.js', 'Vercel'];
+const tech = ['Figma', 'React JS', 'Tailwind CSS', 'JavaScript', 'HTML', 'Firebase', 'Supabase', 'Git', 'GitHub', 'Node.js', 'Vercel'];
 const greetings = [
   'Hello, welcome to my portfolio!',
   'Halo, selamat datang di portfolio saya!',
@@ -56,12 +56,16 @@ export default function Hero() {
         <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .8 }}>
           <TypewriterGreeting />
 
-          <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[.98] tracking-[-.04em] text-slate-950 sm:text-6xl lg:text-8xl">
-            I build digital products that <span className="gradient-text">keep moving.</span>
-          </h1>
+        <h1 className="mt-5 max-w-4xl text-5xl font-black leading-[.98] tracking-[-.04em] text-sky-500 sm:text-6xl lg:text-7xl">
+          Bagas Arya Wijaya
+        </h1>
+
+        <h5 className="mt-3 max-w-2xl text-xl font-bold leading-[.98] tracking-[-.02em] text-sky-500 sm:text-2xl lg:text-5xl">
+          Full Stack Web Developer
+        </h5>
 
           <p className="mt-7 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
-            I am a Full Stack Developer who enjoys turning ideas into fast, responsive, and enjoyable websites. Just like running: consistent, always moving forward, and constantly seeking a better pace.
+            I create modern web applications and interactive experiences that combine reliable functionality with thoughtful visual design test.
           </p>
 
           <div className="mt-8 flex gap-3">

@@ -18,6 +18,7 @@ const expertise = [
   "Git & GitHub",
   "Node.js",
   "Vercel",
+  "Figma",
 ];
 
 export default function About() {

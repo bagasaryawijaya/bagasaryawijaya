@@ -51,7 +51,7 @@ export default function Navbar() {
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 sm:px-8">
         <a href="#home" onClick={() => handleClick('home')} className="group flex items-center gap-2 font-black tracking-tight text-slate-950">
           <img src={logo} alt="Logo Bagas Arya Wijaya" className="h-10 w-10 rounded-2xl object-cover shadow-lg shadow-sky-300/30 transition-transform group-hover:-rotate-6" />
-          <span className="hidden sm:block">Bagas <span className="text-sky-500">Arya</span></span>
+          <span className="hidden sm:block  text-sky-500">Bagas <span className=" text-sky-500">Arya </span><span className=" text-sky-500">Wijaya</span></span>
         </a>
 
         <div className="hidden items-center gap-8 md:flex">
