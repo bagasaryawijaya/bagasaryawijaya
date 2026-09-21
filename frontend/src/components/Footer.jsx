@@ -38,10 +38,6 @@ const techStack = [
     icon: 'https://cdn.simpleicons.org/firebase/FFCA28',
   },
   {
-    name: 'Supabase',
-    icon: 'https://cdn.simpleicons.org/supabase/3ECF8E',
-  },
-  {
     name: 'Vercel',
     icon: 'https://cdn.simpleicons.org/vercel/000000',
   },
