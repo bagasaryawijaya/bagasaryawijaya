@@ -14,33 +14,48 @@ const greetings = [
 ];
 
 function TypewriterGreeting() {
-  const [languageIndex, setLanguageIndex] = useState(0);
   const [text, setText] = useState('');
   const [deleting, setDeleting] = useState(false);
+  const phrases = ['Hello, welcome to my portfolio!', 'Halo, selamat datang di portfolio saya!'];
+  const [index, setIndex] = useState(0);
 
   useEffect(() => {
-    const fullText = greetings[languageIndex];
-    const speed = deleting ? 38 : 68;
+    const phrase = phrases[index];
+    const delay = deleting ? 45 : 85;
     const timer = window.setTimeout(() => {
-      if (!deleting) {
-        const next = fullText.slice(0, text.length + 1);
-        setText(next);
-        if (next === fullText) setDeleting(true);
-      } else {
-        const next = fullText.slice(0, Math.max(0, text.length - 1));
-        setText(next);
-        if (!next) {
-          setDeleting(false);
-          setLanguageIndex((i) => (i + 1) % greetings.length);
-        }
-      }
-    }, text === fullText ? 1400 : speed);
+      if (!deleting && text.length < phrase.length) setText(phrase.slice(0, text.length + 1));
+      else if (deleting && text.length > 0) setText(phrase.slice(0, text.length - 1));
+      else if (!deleting) setDeleting(true);
+      else { setDeleting(false); setIndex((value) => (value + 1) % phrases.length); }
+    }, !deleting && text === phrase ? 1700 : deleting && text === '' ? 350 : delay);
     return () => window.clearTimeout(timer);
-  }, [text, deleting, languageIndex]);
+  }, [text, deleting, index]);
 
   return (
-    <div className="typewriter-greeting" aria-live="polite">
+    <div className="typewriter-greeting" aria-label="Welcome to my portfolio">
+      <span className="hero-greeting" aria-hidden="true" />
       <span>{text}</span><span className="typewriter-caret" aria-hidden="true" />
+    </div>
+  );
+}
+
+function AnimatedRole() {
+  const roles = ['Full Stack Web Developer', 'UI/UX Designer'];
+  const [roleIndex, setRoleIndex] = useState(0);
+
+  useEffect(() => {
+    const timer = window.setInterval(() => {
+      setRoleIndex((index) => (index + 1) % roles.length);
+    }, 2600);
+    return () => window.clearInterval(timer);
+  }, []);
+
+  return (
+    <div className="role-animation" aria-live="polite">
+      <span className="role-animation-text" key={roles[roleIndex]}>
+        {roles[roleIndex]}
+      </span>
+      <span className="role-animation-line" aria-hidden="true" />
     </div>
   );
 }
@@ -56,13 +71,13 @@ export default function Hero() {
         <motion.div initial={{ opacity: 0, x: -35 }} animate={{ opacity: 1, x: 0 }} transition={{ duration: .8 }}>
           <TypewriterGreeting />
 
-        <h1 className="mt-7 max-w-4xl text-5xl font-black leading-[.98] tracking-[-.04em] text-sky-500 sm:text-6xl lg:text-7xl">
+        <h1 className="hero-name mt-7 max-w-4xl text-5xl font-black leading-[.98] tracking-[-.04em] sm:text-6xl lg:text-7xl">
           Bagas Arya Wijaya
         </h1>
 
-        <h5 className="mt-7 max-w-2xl text-xl font-bold leading-[.98] tracking-[-.02em] text-sky-500 sm:text-2xl lg:text-5xl">
-          Full Stack Web Developer
-        </h5>
+        <h2 className="mt-7 max-w-2xl">
+          <AnimatedRole />
+        </h2>
 
           <p className="mt-7 max-w-2xl text-base leading-7 text-slate-600 sm:text-lg">
             I create modern web applications and interactive experiences that combine reliable functionality with thoughtful visual design test.

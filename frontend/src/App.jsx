@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 import Navbar from './components/Navbar';
 import Hero from './components/Hero';
@@ -6,9 +6,13 @@ import About from './components/About';
 import Portfolio from './components/Portfolio';
 import Contact from './components/Contact';
 import Footer from './components/Footer';
+import LoadingScreen from './components/LoadingScreen';
 
 export default function App() {
   const [showTop, setShowTop] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const finishLoading = useCallback(() => setIsLoading(false), []);
 
   useEffect(() => {
     const onScroll = () => setShowTop(window.scrollY > 420);
@@ -19,6 +23,7 @@ export default function App() {
 
   return (
     <div className="min-h-screen overflow-x-hidden">
+      {isLoading && <LoadingScreen onComplete={finishLoading} />}
       <Navbar />
       <main>
         <Hero />

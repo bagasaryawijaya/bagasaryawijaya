@@ -2,12 +2,47 @@ import { motion } from 'framer-motion';
 import { Footprints, Zap } from 'lucide-react';
 import profile from '../assets/Muka-BagasAryaWijaya.jpg';
 
-const runEase = [0.42, 0, 0.58, 1];
+/*
+ * ============================================================
+ * RUNNER ANIMATION
+ * ============================================================
+ *
+ * Sinkronisasi:
+ *
+ *   KAKI KANAN MAJU  <-->  TANGAN KIRI MAJU
+ *   KAKI KIRI MAJU   <-->  TANGAN KANAN MAJU
+ *
+ * Semua anggota tubuh menggunakan fase yang sama.
+ */
 
+const RUN_DURATION = 0.72;
+
+/*
+ * Main running cycle.
+ *
+ * 0%   = kaki kanan maju
+ * 25%  = transisi
+ * 50%  = kaki kiri maju
+ * 75%  = transisi
+ * 100% = kembali ke kaki kanan maju
+ */
 const runTransition = {
-  duration: 0.78,
+  duration: RUN_DURATION,
   repeat: Infinity,
-  ease: runEase,
+  ease: 'linear',
+};
+
+const smoothTransition = {
+  duration: RUN_DURATION,
+  repeat: Infinity,
+  ease: 'easeInOut',
+};
+
+const gpuStyle = {
+  willChange: 'transform',
+  backfaceVisibility: 'hidden',
+  WebkitBackfaceVisibility: 'hidden',
+  transform: 'translateZ(0)',
 };
 
 export default function RunnerAvatar() {
@@ -15,19 +50,27 @@ export default function RunnerAvatar() {
     <div
       className="runner-stage"
       aria-label="Avatar Bagas sedang berlari di track running"
+      style={{
+        contain: 'layout style paint',
+      }}
     >
-      {/* Background glow */}
+      {/* =====================================================
+          BACKGROUND GLOW
+      ====================================================== */}
       <div className="track-glow" />
 
-      {/* Running track */}
+      {/* =====================================================
+          RUNNING TRACK
+      ====================================================== */}
       <motion.div
         className="running-track"
         animate={{ rotate: 360 }}
         transition={{
-          duration: 26,
+          duration: 30,
           repeat: Infinity,
           ease: 'linear',
         }}
+        style={gpuStyle}
       >
         <div className="track-lane lane-outer" />
         <div className="track-lane lane-middle" />
@@ -38,59 +81,80 @@ export default function RunnerAvatar() {
         <div className="track-dash dash-three" />
       </motion.div>
 
-      {/* Orbit */}
+      {/* =====================================================
+          ORBIT
+      ====================================================== */}
       <motion.div
         className="track-orbit"
         animate={{ rotate: 360 }}
         transition={{
-          duration: 8,
+          duration: 10,
           repeat: Infinity,
           ease: 'linear',
         }}
+        style={gpuStyle}
       >
         <span />
       </motion.div>
 
-      {/* Ground shadow */}
+      {/* =====================================================
+          GROUND SHADOW
+      ====================================================== */}
       <motion.div
         className="runner-shadow"
         animate={{
-          scaleX: [1, 0.84, 1.06, 0.9, 1],
-          opacity: [0.17, 0.1, 0.18, 0.11, 0.17],
+          scaleX: [1, 0.88, 1.04, 0.9, 1],
+          opacity: [0.16, 0.11, 0.17, 0.12, 0.16],
         }}
-        transition={{
-          duration: 0.78,
-          repeat: Infinity,
-          ease: 'easeInOut',
+        transition={smoothTransition}
+        style={{
+          ...gpuStyle,
+          willChange: 'transform, opacity',
         }}
       />
 
-      {/* =========================
+      {/* =====================================================
           RUNNER
-      ========================== */}
+      ====================================================== */}
       <motion.div
         className="runner-character"
         animate={{
-          y: [0, -5, 0, -4, 0],
-          rotate: [-1.2, 0.8, -0.3, 0.7, -1.2],
+          y: [0, -4, 0, -3, 0],
         }}
         transition={runTransition}
+        style={{
+          ...gpuStyle,
+          willChange: 'transform',
+        }}
       >
-        {/* =========================
-            LEGS
-            Ditaruh SEBELUM badan supaya
-            secara visual berada di belakang.
-        ========================== */}
 
-        {/* Back leg */}
+        {/* ===================================================
+            KAKI BELAKANG / KAKI KANAN
+        ====================================================
+
+            FASE:
+            0%   = MAJU
+            25%  = netral
+            50%  = MUNDUR
+            75%  = netral
+            100% = MAJU
+
+            Tangan kiri menggunakan fase yang SAMA.
+        ==================================================== */}
         <motion.div
           className="runner-leg runner-leg-back"
           animate={{
-            // Right leg moves forward while left arm moves forward.
-            rotate: [42, 12, -42, -18, 42],
+            rotate: [
+              42,
+              10,
+              -42,
+              -18,
+              42,
+            ],
           }}
           transition={runTransition}
           style={{
+            ...gpuStyle,
             transformOrigin: '50% 8%',
             zIndex: 1,
           }}
@@ -99,15 +163,32 @@ export default function RunnerAvatar() {
           <span className="runner-shoe" />
         </motion.div>
 
-        {/* Front leg */}
+        {/* ===================================================
+            KAKI DEPAN / KAKI KIRI
+        ====================================================
+
+            Kebalikan dari kaki kanan.
+
+            Saat kaki kanan MAJU,
+            kaki kiri MUNDUR.
+
+            Saat kaki kanan MUNDUR,
+            kaki kiri MAJU.
+        ==================================================== */}
         <motion.div
           className="runner-leg runner-leg-front"
           animate={{
-            // Left leg moves forward while right arm moves forward.
-            rotate: [-38, 8, 40, 14, -38],
+            rotate: [
+              -42,
+              -10,
+              42,
+              18,
+              -42,
+            ],
           }}
           transition={runTransition}
           style={{
+            ...gpuStyle,
             transformOrigin: '50% 8%',
             zIndex: 1,
           }}
@@ -116,33 +197,53 @@ export default function RunnerAvatar() {
           <span className="runner-shoe" />
         </motion.div>
 
-        {/* =========================
-            BACK ARM
-        ========================== */}
+        {/* ===================================================
+            TANGAN KIRI / BACK ARM
+        ====================================================
+
+            SAMA PERSIS dengan kaki kanan.
+
+            Kaki kanan MAJU
+                    ↓
+            Tangan kiri MAJU
+        ==================================================== */}
         <motion.div
           className="runner-arm runner-arm-back"
           animate={{
-            // Left arm: forward at the same time as the right leg.
-            rotate: [-34, 20, 36, -18, -34],
+            rotate: [
+              42,
+              10,
+              -42,
+              -18,
+              42,
+            ],
           }}
           transition={runTransition}
           style={{
+            ...gpuStyle,
             transformOrigin: '50% 10%',
             zIndex: 2,
           }}
         />
 
-        {/* =========================
+        {/* ===================================================
             BODY
-        ========================== */}
+        ==================================================== */}
         <motion.div
           className="runner-torso"
           animate={{
-            rotate: [-2, 1, -1, 1.5, -2],
-            scaleY: [1, 1.015, 1, 1.01, 1],
+            rotate: [
+              -2,
+              1,
+              -1,
+              1.2,
+              -2,
+            ],
           }}
           transition={runTransition}
           style={{
+            ...gpuStyle,
+            transformOrigin: '50% 50%',
             zIndex: 4,
           }}
         >
@@ -153,74 +254,104 @@ export default function RunnerAvatar() {
           </div>
         </motion.div>
 
-        {/* =========================
-            FRONT ARM
-        ========================== */}
+        {/* ===================================================
+            TANGAN KANAN / FRONT ARM
+        ====================================================
+
+            Kebalikan dari tangan kiri.
+
+            Kaki kiri MAJU
+                    ↓
+            Tangan kanan MAJU
+        ==================================================== */}
         <motion.div
           className="runner-arm runner-arm-front"
           animate={{
-            // Right arm: opposite the left arm and synchronized with left leg.
-            rotate: [30, -36, 32, -30, 30],
+            rotate: [
+              -42,
+              -10,
+              42,
+              18,
+              -42,
+            ],
           }}
           transition={runTransition}
           style={{
+            ...gpuStyle,
             transformOrigin: '50% 10%',
             zIndex: 5,
           }}
         />
 
-        {/* =========================
+        {/* ===================================================
             HEAD
-        ========================== */}
+        ==================================================== */}
         <motion.div
           className="runner-head"
           animate={{
-            rotate: [-1.5, 1.8, -0.4, 1.1, -1.5],
-            y: [0, -1, 0, -1, 0],
+            rotate: [
+              -1.5,
+              1.5,
+              -0.4,
+              1,
+              -1.5,
+            ],
+            y: [
+              0,
+              -1,
+              0,
+              -1,
+              0,
+            ],
           }}
           transition={runTransition}
           style={{
+            ...gpuStyle,
             zIndex: 6,
           }}
         >
           <img
             src={profile}
             alt="Avatar Bagas Arya Wijaya"
+            draggable="false"
+            decoding="async"
           />
         </motion.div>
       </motion.div>
 
-      {/* =========================
-          BADGES
-      ========================== */}
-
+      {/* =====================================================
+          TOP BADGE
+      ====================================================== */}
       <motion.div
         className="runner-badge runner-badge-top"
         animate={{
-          y: [0, -5, 0],
-          rotate: [4, 2, 4],
+          y: [0, -4, 0],
         }}
         transition={{
-          duration: 2.2,
+          duration: 2.4,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
+        style={gpuStyle}
       >
         <Zap size={15} />
         Keep Moving
       </motion.div>
 
+      {/* =====================================================
+          BOTTOM BADGE
+      ====================================================== */}
       <motion.div
         className="runner-badge runner-badge-bottom"
         animate={{
-          y: [0, 4, 0],
-          rotate: [-4, -2, -4],
+          y: [0, 3, 0],
         }}
         transition={{
-          duration: 2.5,
+          duration: 2.7,
           repeat: Infinity,
           ease: 'easeInOut',
         }}
+        style={gpuStyle}
       >
         <Footprints size={15} />
         Code • Run • Repeat
