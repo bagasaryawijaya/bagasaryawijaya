@@ -27,6 +27,81 @@ function send(res, status, body) {
   return res.end(JSON.stringify(body));
 }
 
+async function sendContactEmail(body) {
+  const name = String(body?.name || '').trim().slice(0, 100);
+  const email = String(body?.email || '').trim().slice(0, 254);
+  const message = String(body?.message || '').trim().slice(0, 5000);
+
+  if (!name || !email || !message) {
+    return { ok: false, status: 400, error: 'Name, email, and message are required.' };
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    return { ok: false, status: 400, error: 'Please enter a valid email address.' };
+  }
+
+  const apiKey = process.env.RESEND_API_KEY;
+  // Vercel-only configuration: the secret API key is read server-side.
+  // The Resend testing sender can be used without buying a custom domain.
+  const fromEmail = 'Portfolio <onboarding@resend.dev>';
+
+  if (!apiKey) {
+    console.error('Contact email is not configured. Missing RESEND_API_KEY.');
+    return {
+      ok: false,
+      status: 503,
+      error: 'Email service is not configured. Please add RESEND_API_KEY in Vercel Environment Variables.'
+    };
+  }
+
+  const response = await fetch('https://api.resend.com/emails', {
+    method: 'POST',
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      from: fromEmail,
+      to: ['bagasaryawijaya27@gmail.com'],
+      reply_to: email,
+      subject: `Portfolio Contact: ${name}`,
+      text: [
+        `Name: ${name}`,
+        `Email: ${email}`,
+        '',
+        'Message:',
+        message
+      ].join('\n'),
+      html: `
+        <h2>New Portfolio Contact Message</h2>
+        <p><strong>Name:</strong> ${escapeHtml(name)}</p>
+        <p><strong>Email:</strong> ${escapeHtml(email)}</p>
+        <hr />
+        <p><strong>Message:</strong></p>
+        <p>${escapeHtml(message).replace(/\n/g, '<br />')}</p>
+      `
+    })
+  });
+
+  if (!response.ok) {
+    const details = await response.text();
+    console.error('Resend API error:', response.status, details);
+    return { ok: false, status: 502, error: 'The email service could not send the message.' };
+  }
+
+  return { ok: true };
+}
+
+function escapeHtml(value) {
+  return value
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#039;');
+}
+
 export default async function handler(req, res) {
   const path = String(req.url || '').split('?')[0].replace(/^\/api\/?/, '');
 
@@ -41,6 +116,17 @@ export default async function handler(req, res) {
       }
     }
     return send(res, 200, {status:'ok', service:'bagas-portfolio-api', firebase:firestore?'connected':'not_configured', responseTime:Date.now()-started, timestamp:new Date().toISOString()});
+  }
+
+  if (path === 'contact' && req.method === 'POST') {
+    try {
+      const result = await sendContactEmail(req.body);
+      if (!result.ok) return send(res, result.status, { error: result.error });
+      return send(res, 200, { ok: true, message: 'Message sent successfully.' });
+    } catch (error) {
+      console.error('Contact endpoint error:', error);
+      return send(res, 500, { error: 'Gagal mengirim pesan.' });
+    }
   }
 
   const firestore = getDb();

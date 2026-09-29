@@ -6,6 +6,7 @@ import { SiFigma, SiReact, SiTailwindcss, SiJavascript, SiHtml5, SiFirebase, SiS
 import projectVideo from '../assets/website-video-belajar.png';
 
 import certWordpress from '../assets/SertifikatMyskill.jpg';
+import certRiseUp from '../assets/SertifikatRiseUp.jpg';
 
 
 
@@ -19,6 +20,7 @@ const projects = [{
 
 const certificates = [
   { title: 'Website Development With Wordpress', year: '2025', image: certWordpress },
+  { title: 'RISE UP+ : Career Preparation Program', year: '2026', image: certRiseUp },
   // { title: 'Full Stack Web Developer', year: '2026', image: certFullStack },
 ];
 
@@ -78,7 +80,6 @@ export default function Portfolio() {
                       {project.tags.map((tag) => <span key={tag} className="rounded-full bg-sky-50 px-3 py-1 text-xs font-bold text-sky-700">{tag}</span>)}
                     </div>
                     <div className="mt-4 flex flex-wrap gap-2">
-                      <a href={project.image} download="project-video-belajar.png" className="download-btn"><Download size={16} /> Unduh Foto Project</a>
                       <a href={project.link} target="_blank" rel="noreferrer" className="download-btn download-btn-primary"><ExternalLink size={16} /> Buka Project</a>
                     </div>
                   </div>
