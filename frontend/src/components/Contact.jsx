@@ -1,71 +1,12 @@
-import React, { useState } from "react";
+import React from "react";
 import {
-  Mail,
-  Calendar,
   Linkedin,
   Instagram,
   Github,
-  Send,
   ArrowUpRight,
 } from "lucide-react";
 
 export default function App() {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    message: "",
-  });
-
-  const [status, setStatus] = useState({ type: "", message: "" });
-  const [isSending, setIsSending] = useState(false);
-
-  const handleChange = (e) => {
-    setFormData({
-      ...formData,
-      [e.target.name]: e.target.value,
-    });
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setStatus({ type: "", message: "" });
-    setIsSending(true);
-
-    try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-      });
-
-      const data = await response.json().catch(() => ({}));
-
-      if (!response.ok) {
-        throw new Error(data.error || "Gagal mengirim pesan.");
-      }
-
-      setStatus({
-        type: "success",
-        message: "Message sent successfully! I'll get back to you soon.",
-      });
-
-      setFormData({
-        name: "",
-        email: "",
-        message: "",
-      });
-    } catch (error) {
-      setStatus({
-        type: "error",
-        message:
-          error.message ||
-          "Unable to send your message. Please try again later.",
-      });
-    } finally {
-      setIsSending(false);
-    }
-  };
-
   return (
     <main className="min-h-screen bg-slate-950 text-white">
       {/* Background Decoration */}
@@ -82,7 +23,6 @@ export default function App() {
       >
         {/* Header */}
         <div className="mx-auto mb-16 max-w-3xl text-center">
-
           <h1 className="text-4xl font-bold tracking-tight sm:text-5xl lg:text-6xl">
             Contact{" "}
             <span className="text-sky-400">Me</span>
@@ -93,229 +33,132 @@ export default function App() {
           </p>
         </div>
 
-        {/* Main Grid */}
-        <div className="grid gap-8 lg:grid-cols-5">
-          {/* LEFT SIDE */}
-          <div className="space-y-6 lg:col-span-3">
-            {/* Get In Touch */}
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl shadow-sky-950/20 backdrop-blur-xl sm:p-8">
-              <div className="mb-8">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-2xl bg-sky-400/10 text-sky-400">
-                  <Mail size={24} />
-                </div>
+        {/* Connect With Me */}
+        <div className="mx-auto max-w-2xl">
+          <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl shadow-sky-950/20 backdrop-blur-xl sm:p-8">
+            <h2 className="text-2xl font-bold text-white">
+              Connect With Me
+            </h2>
 
-                <h2 className="text-2xl font-bold text-white">
-                  Get in Touch
-                </h2>
+            <p className="mt-2 text-sm leading-6 text-slate-400">
+              Let's connect and keep in touch.
+            </p>
 
-                <p className="mt-2 max-w-xl text-sm leading-6 text-slate-400">
-                  Have something to discuss? Send me a message and let's talk.
-                </p>
-              </div>
-
-              {/* Form */}
-              <form onSubmit={handleSubmit} className="space-y-5">
-                {/* Name */}
-                <div>
-                  <label
-                    htmlFor="name"
-                    className="mb-2 block text-sm font-medium text-slate-300"
-                  >
-                    Your Name
-                  </label>
-
-                  <input
-                    id="name"
-                    name="name"
-                    type="text"
-                    required
-                    value={formData.name}
-                    onChange={handleChange}
-                    placeholder="John Doe"
-                    className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-sky-400/60 focus:ring-2 focus:ring-sky-400/10"
-                  />
-                </div>
-
-                {/* Email */}
-                <div>
-                  <label
-                    htmlFor="email"
-                    className="mb-2 block text-sm font-medium text-slate-300"
-                  >
-                    Your Email
-                  </label>
-
-                  <input
-                    id="email"
-                    name="email"
-                    type="email"
-                    required
-                    value={formData.email}
-                    onChange={handleChange}
-                    placeholder="email@gmail.com"
-                    className="w-full rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-sky-400/60 focus:ring-2 focus:ring-sky-400/10"
-                  />
-                </div>
-
-                {/* Message */}
-                <div>
-                  <label
-                    htmlFor="message"
-                    className="mb-2 block text-sm font-medium text-slate-300"
-                  >
-                    Your Message
-                  </label>
-
-                  <textarea
-                    id="message"
-                    name="message"
-                    required
-                    rows="6"
-                    value={formData.message}
-                    onChange={handleChange}
-                    placeholder="Tell me about your project..."
-                    className="w-full resize-none rounded-xl border border-white/10 bg-slate-900/70 px-4 py-3.5 text-sm text-white outline-none transition placeholder:text-slate-600 focus:border-sky-400/60 focus:ring-2 focus:ring-sky-400/10"
-                  />
-                </div>
-
-                {/* Submit */}
-                <button
-                  type="submit"
-                  className="group flex w-full items-center justify-center gap-2 rounded-xl bg-sky-400 px-5 py-3.5 text-sm font-semibold text-slate-950 transition duration-300 hover:bg-sky-300 hover:shadow-lg hover:shadow-sky-400/20"
-                >
-                  <Send
-                    size={17}
-                    className="transition-transform duration-300 group-hover:translate-x-1"
-                  />
-
-                  {isSending
-                    ? "Sending..."
-                    : status.type === "success"
-                      ? "Message Sent!"
-                      : "Send Message"}
-                </button>
-
-                {status.message && (
-                  <p
-                    role="status"
-                    aria-live="polite"
-                    className={`text-sm ${
-                      status.type === "success"
-                        ? "text-emerald-400"
-                        : "text-rose-400"
-                    }`}
-                  >
-                    {status.message}
-                  </p>
-                )}
-              </form>
-            </div>
-          </div>
-
-          {/* RIGHT SIDE */}
-          <div className="space-y-6 lg:col-span-2">
-            {/* Connect With Me */}
-            <div className="rounded-3xl border border-white/10 bg-white/[0.03] p-6 shadow-2xl shadow-sky-950/20 backdrop-blur-xl sm:p-8">
-              <h2 className="text-2xl font-bold text-white">
-                Connect With Me
-              </h2>
-
-              <p className="mt-2 text-sm leading-6 text-slate-400">
-                Let's connect and keep in touch.
-              </p>
-
-              <div className="mt-8 space-y-3">
-                {/* LinkedIn */}
-                <a
-                  href="https://www.linkedin.com/in/bagas-arya-wijaya-0b6414261/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-4 transition duration-300 hover:border-sky-400/30 hover:bg-sky-400/5"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-400/10 text-sky-400 transition group-hover:bg-sky-400 group-hover:text-slate-950">
-                      <Linkedin size={20} />
-                    </div>
-
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        LinkedIn
-                      </p>
-
-                      <p className="text-xs text-slate-500">
-                        Let's connect professionally
-                      </p>
-                    </div>
+            <div className="mt-8 space-y-3">
+              {/* LinkedIn */}
+              <a
+                href="https://www.linkedin.com/in/bagas-arya-wijaya-0b6414261/"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-4 transition duration-300 hover:border-[#0A66C2]/40 hover:bg-[#0A66C2]/5"
+              >
+                <div className="flex items-center gap-4">
+                  <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0A66C2]/10 text-[#0A66C2] transition-all duration-300 group-hover:bg-[#0A66C2] group-hover:text-white group-hover:shadow-lg group-hover:shadow-[#0A66C2]/30">
+                    <Linkedin size={20} />
                   </div>
 
-                  <ArrowUpRight
-                    size={18}
-                    className="text-slate-600 transition group-hover:text-sky-400"
-                  />
-                </a>
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      LinkedIn
+                    </p>
 
-                {/* Instagram */}
-                <a
-                  href="https://www.instagram.com/bagasarya_23/"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-4 transition duration-300 hover:border-sky-400/30 hover:bg-sky-400/5"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-400/10 text-sky-400 transition group-hover:bg-sky-400 group-hover:text-slate-950">
-                      <Instagram size={20} />
-                    </div>
+                    <p className="text-xs text-slate-500">
+                      Let's connect professionally
+                    </p>
+                  </div>
+                </div>
 
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        Instagram
-                      </p>
+                <ArrowUpRight
+                  size={18}
+                  className="text-slate-600 transition duration-300 group-hover:text-[#0A66C2]"
+                />
+              </a>
 
-                      <p className="text-xs text-slate-500">
-                        Follow my journey
-                      </p>
-                    </div>
+              {/* Instagram */}
+              <a
+                href="https://www.instagram.com/bagasarya_23/"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-4 transition duration-300 hover:border-pink-400/40 hover:bg-pink-400/5"
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className="
+                      flex h-11 w-11 items-center justify-center rounded-xl
+                      bg-gradient-to-br from-[#833AB4]/10 via-[#E1306C]/10 to-[#F77737]/10
+                      text-[#E1306C]
+                      transition-all duration-300
+                      group-hover:bg-gradient-to-br
+                      group-hover:from-[#833AB4]
+                      group-hover:via-[#E1306C]
+                      group-hover:to-[#F77737]
+                      group-hover:text-white
+                      group-hover:shadow-lg
+                      group-hover:shadow-pink-500/30
+                    "
+                  >
+                    <Instagram size={20} />
                   </div>
 
-                  <ArrowUpRight
-                    size={18}
-                    className="text-slate-600 transition group-hover:text-sky-400"
-                  />
-                </a>
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      Instagram
+                    </p>
 
-                {/* Github */}
-                <a
-                  href="https://github.com/bagasaryawijaya"
-                  target="_blank"
-                  rel="noreferrer"
-                  className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-4 transition duration-300 hover:border-sky-400/30 hover:bg-sky-400/5"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="flex h-11 w-11 items-center justify-center rounded-xl bg-sky-400/10 text-sky-400 transition group-hover:bg-sky-400 group-hover:text-slate-950">
-                      <Github size={20} />
-                    </div>
+                    <p className="text-xs text-slate-500">
+                      Follow my journey
+                    </p>
+                  </div>
+                </div>
 
-                    <div>
-                      <p className="text-sm font-semibold text-white">
-                        GitHub
-                      </p>
+                <ArrowUpRight
+                  size={18}
+                  className="text-slate-600 transition duration-300 group-hover:text-[#E1306C]"
+                />
+              </a>
 
-                      <p className="text-xs text-slate-500">
-                        Check out my projects
-                      </p>
-                    </div>
+              {/* GitHub */}
+              <a
+                href="https://github.com/bagasaryawijaya"
+                target="_blank"
+                rel="noreferrer"
+                className="group flex items-center justify-between rounded-2xl border border-white/10 bg-slate-900/50 p-4 transition duration-300 hover:border-white/30 hover:bg-white/[0.03]"
+              >
+                <div className="flex items-center gap-4">
+                  <div
+                    className="
+                      flex h-11 w-11 items-center justify-center rounded-xl
+                      bg-white/10
+                      text-white/80
+                      transition-all duration-300
+                      group-hover:bg-white
+                      group-hover:text-slate-950
+                      group-hover:shadow-lg
+                      group-hover:shadow-white/20
+                    "
+                  >
+                    <Github size={20} />
                   </div>
 
-                  <ArrowUpRight
-                    size={18}
-                    className="text-slate-600 transition group-hover:text-sky-400"
-                  />
-                </a>
-              </div>
+                  <div>
+                    <p className="text-sm font-semibold text-white">
+                      GitHub
+                    </p>
+
+                    <p className="text-xs text-slate-500">
+                      Check out my projects
+                    </p>
+                  </div>
+                </div>
+
+                <ArrowUpRight
+                  size={18}
+                  className="text-slate-600 transition duration-300 group-hover:text-white"
+                />
+              </a>
             </div>
           </div>
         </div>
-
       </section>
     </main>
   );

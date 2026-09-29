@@ -1,4 +1,6 @@
 import { Router } from 'express';
+import { FieldValue } from 'firebase-admin/firestore';
+import { getDb } from '../firebase.js';
 
 const router = Router();
 const DESTINATION_EMAIL = 'bagasaryawijaya27@gmail.com';
@@ -25,49 +27,33 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Please enter a valid email address.' });
   }
 
-  const apiKey = process.env.RESEND_API_KEY;
-  const fromEmail = process.env.RESEND_FROM_EMAIL;
-
-  if (!apiKey || !fromEmail) {
-    return res.status(503).json({
-      error: 'Email service is not configured. Add RESEND_API_KEY and RESEND_FROM_EMAIL.'
-    });
-  }
-
   try {
-    const response = await fetch('https://api.resend.com/emails', {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${apiKey}`,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        from: fromEmail,
-        to: [DESTINATION_EMAIL],
-        reply_to: email,
+    const db = getDb();
+    if (!db) {
+      return res.status(503).json({ error: 'Firebase is not configured on the server.' });
+    }
+
+    await db.collection('mail').add({
+      to: [DESTINATION_EMAIL],
+      replyTo: email,
+      message: {
         subject: `Portfolio Contact: ${name}`,
         text: `Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`,
-        html: `
-          <h2>New Portfolio Contact Message</h2>
+        html: `<h2>New Portfolio Contact Message</h2>
           <p><strong>Name:</strong> ${escapeHtml(name)}</p>
           <p><strong>Email:</strong> ${escapeHtml(email)}</p>
           <hr />
           <p><strong>Message:</strong></p>
-          <p>${escapeHtml(message).replace(/\n/g, '<br />')}</p>
-        `
-      })
+          <p>${escapeHtml(message).replace(/\n/g, '<br />')}</p>`,
+      },
+      contact: { name, email, message },
+      createdAt: FieldValue.serverTimestamp(),
     });
 
-    if (!response.ok) {
-      const details = await response.text();
-      console.error('Resend API error:', response.status, details);
-      return res.status(502).json({ error: 'The email service could not send the message.' });
-    }
-
-    return res.status(200).json({ ok: true, message: 'Message sent successfully.' });
+    return res.status(200).json({ ok: true, message: 'Message queued successfully.' });
   } catch (error) {
-    console.error('Contact email error:', error);
-    return res.status(500).json({ error: 'Gagal mengirim pesan.' });
+    console.error('Firebase email queue error:', error);
+    return res.status(500).json({ error: 'Gagal memasukkan pesan ke antrean email Firebase.' });
   }
 });
 
