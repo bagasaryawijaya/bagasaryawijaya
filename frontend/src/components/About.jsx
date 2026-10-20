@@ -169,7 +169,7 @@ export default function About() {
                   </p>
 
                   <p className="mt-1 text-lg font-black text-indigo-600">
-                    3.50{" "}
+                    4.00{" "}
                     <span className="text-sm font-semibold text-slate-400">
                       / 4.00
                     </span>
